@@ -75,8 +75,10 @@ contract Quip {
       _voted[msg.sender] = true;
       emit VoterRegistered( msg.sender );
     }
+    address quipper = _quippers[index];
+    require( msg.sender != quipper, "Quippers are disallowed from voting for their own quips." );
     _votes[msg.sender] = index;
-    emit VoteUpdated( msg.sender, _quippers[index], index, _quips[index] ); 
+    emit VoteUpdated( msg.sender, quipper, index, _quips[index] ); 
   }
 
   function payout( address token, uint256 amount )

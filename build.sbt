@@ -6,10 +6,12 @@ version := "0.0.1-SNAPSHOT"
 
 scalaVersion := "2.12.10"
 
-resolvers += ("releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
-
-resolvers += ("snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
-
-resolvers += ("Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/")
-
 ethcfgScalaStubsPackage := "com.mchange.sc.v1.ethquip.contract"
+
+libraryDependencies += "org.specs2" %% "specs2-core" % "4.0.2" % "test"
+
+Test / parallelExecution := false
+
+Test / ethcfgAutoDeployContracts := Seq( "Quip", "ERC20Mintable" )
+
+
