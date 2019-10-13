@@ -27,14 +27,16 @@ object QuipPlugin extends AutoPlugin {
   import autoImport._
 
   lazy val defaults : Seq[sbt.Def.Setting[_]] = Seq(
+    Compile / quipAdd := { quipAddTask( Compile ).evaluated },
     Compile / quipList := { quipListTask( Compile ).value },
+    Compile / quipVote := { quipVoteTask( Compile ).evaluated },
   )
 
   private def quipAddTask( config : Configuration ) : Initialize[InputTask[Unit]] = Def.inputTask {
     val log = streams.value.log
     val contractAddress = EthAddress(quipContractAddress.value)
 
-    val quip = StringBasic.parsed
+    val quip = (Space ~> StringBasic).parsed
 
     implicit val ( sctx, ssender ) = ( config / xethStubEnvironment ).value
 
@@ -46,6 +48,7 @@ object QuipPlugin extends AutoPlugin {
   }
 
   private def quipListTask( config : Configuration ) : Initialize[Task[Unit]] = Def.task {
+    val chainId = ( config / ethNodeChainId).value
     val contractAddress = quipContractAddress.value
 
     implicit val ( sctx, ssender ) = ( config / xethStubEnvironment ).value
@@ -60,8 +63,9 @@ object QuipPlugin extends AutoPlugin {
     }
 
     System.out.synchronized {
-      rows.foreach { case ( humanIndex, quip, _ ) =>
-        println( s"${humanIndex}. quip" )
+      rows.foreach { case ( humanIndex, quip, quipper ) =>
+        // println( s"""${humanIndex}. "${quip}", by ${verboseAddress(chainId, quipper)}""" ) // too noisy
+        println( s"""${humanIndex}. "${quip}"""" )
       }
     }
   }
@@ -70,7 +74,7 @@ object QuipPlugin extends AutoPlugin {
     val log = streams.value.log
     val contractAddress = EthAddress(quipContractAddress.value)
 
-    val humanIndex = NatBasic.parsed
+    val humanIndex = (Space ~> NatBasic).parsed
 
     implicit val ( sctx, ssender ) = ( config / xethStubEnvironment ).value
 
