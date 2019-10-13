@@ -3,4 +3,4 @@
 
 // resolvers += Resolver.mavenLocal
 
-addSbtPlugin("com.mchange" % "sbt-ethereum" % "0.3.1")
+addSbtPlugin("com.mchange" % "sbt-ethereum" % "0.3.2")

@@ -15,7 +15,7 @@ lazy val root = (project in file(".")).settings (
 lazy val clientPlugin = (project in file("client-plugin")).dependsOn(root).settings (
   name      := "eth-quip-client-plugin",
   sbtPlugin := true,
-  addSbtPlugin("com.mchange" % "sbt-ethereum" % "0.3.1-SNAPSHOT"),
+  addSbtPlugin("com.mchange" % "sbt-ethereum" % "0.3.2"),
   pomExtra := pomExtraForProjectName( name.value )
 )
 
