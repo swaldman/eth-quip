@@ -27,6 +27,9 @@ contract Quip {
   mapping (address=>bool)    _voted;
   mapping (address=>uint256) _votes;
 
+  
+  // public accessors
+
   function quipCount()
     public
     view
@@ -56,6 +59,27 @@ contract Quip {
     require( _voted[voter] );
     index = _votes[voter];
   }
+
+  function uniformRandomQuip()
+    public
+    view
+    returns( string memory quip, address quipper ) {
+    uint256 quipIndex = solstragglers.shittyRandom() % _quips.length;
+    quip    = _quips[ quipIndex ];
+    quipper = _quippers[ quipIndex ];
+  }
+
+  function voteWeightedRandomQuip()
+    public
+    view
+    returns( string memory quip, address quipper ) {
+    ( , uint256 quipIndex ) = drawQuipper();
+    quip    = _quips[quipIndex];
+    quipper = _quippers[ quipIndex ];
+  }
+  
+
+  // public mutators
 
   function addQuip( string memory quip )
     public
@@ -90,6 +114,7 @@ contract Quip {
     emit QuipPaid( voter, quipper, quipIndex, _quips[quipIndex], token, amount );    
   }
 
+  // private functions
   function doPayout( address recipient, address token, uint256 amount )
     private {
     require( token == address(0) || msg.value == 0, "Pay either in Ether, or pay with only a token, not both." );
