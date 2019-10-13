@@ -1,5 +1,5 @@
 ThisBuild / organization := "com.mchange"
-ThisBuild / version      := "0.0.1-SNAPSHOT"
+ThisBuild / version      := "0.0.1"
 ThisBuild / scalaVersion := "2.12.10"
 
 lazy val root = (project in file(".")).settings (
