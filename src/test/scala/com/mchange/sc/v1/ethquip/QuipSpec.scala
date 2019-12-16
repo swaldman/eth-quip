@@ -35,23 +35,12 @@ class QuipSpec extends Specification with AutoSender { def is = sequential ^ s2"
 
   val Quip0 = "This is only a quip."
 
-  implicit val econtext = scontext.icontext.econtext
-
   def init() : Unit = {
 
     ERC20Mintable.txn.mint( DefaultSender.address, sol.UInt256(1000) )( sender = DefaultSender )
     ERC20Mintable.txn.approve( QuipContract.address, sol.UInt256(100) )( sender = DefaultSender )
 
-    val fut = {
-      for {
-        _ <- Faucet.sendWei( RandomSender0.address, sol.UInt256( 100.ether ) )
-        _ <- Faucet.sendWei( RandomSender1.address, sol.UInt256( 100.ether ) )
-      }
-      yield {
-        ()
-      }
-    }
-    Await.result( fut, Duration.Inf )
+    awaitFundSenders( (RandomSender0, 100.ether ) :: ( RandomSender1, 100.ether ) :: Nil )
   }
 
   def e0 = {
@@ -82,10 +71,10 @@ class QuipSpec extends Specification with AutoSender { def is = sequential ^ s2"
   def e5 = {
     val paid = sol.UInt256(100)
     val overpaid = sol.UInt256(1000)
-    val before = Await.result( RandomSender0.getBalance(), Duration.Inf )
+    val before = awaitBalance( RandomSender0 )
     QuipContract.txn.payout( sol.Address.Zero, paid, payment=stub.Payment.ofWei(overpaid) )( DefaultSender )
-    val after = Await.result( RandomSender0.getBalance(), Duration.Inf )
-    ((after - before) == paid.widen) && (Await.result(jsonrpc.Invoker.getBalance( QuipContract.address )( scontext.icontext ), Duration.Inf) == 0)
+    val after  = awaitBalance( RandomSender0 )
+    ((after - before) == paid.widen) && awaitBalance( QuipContract.address ) == 0
   }
   def e6 = {
     val paid = 100

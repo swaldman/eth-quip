@@ -1,6 +1,10 @@
 ThisBuild / organization := "com.mchange"
-ThisBuild / version      := "0.0.1"
+ThisBuild / version      := "0.0.2-SNAPSHOT"
 ThisBuild / scalaVersion := "2.12.10"
+
+ThisBuild / resolvers += Resolver.mavenLocal
+
+ThisBuild / fork := true // avoids classloader issues related to the default Exchange factory and Jetty. hmm, though.
 
 lazy val root = (project in file(".")).settings (
   name                    := "eth-quip",
@@ -15,7 +19,7 @@ lazy val root = (project in file(".")).settings (
 lazy val clientPlugin = (project in file("client-plugin")).dependsOn(root).settings (
   name      := "eth-quip-client-plugin",
   sbtPlugin := true,
-  addSbtPlugin("com.mchange" % "sbt-ethereum" % "0.3.2"),
+  addSbtPlugin("com.mchange" % "sbt-ethereum" % "0.4.0-SNAPSHOT" changing()),
   pomExtra := pomExtraForProjectName( name.value )
 )
 
